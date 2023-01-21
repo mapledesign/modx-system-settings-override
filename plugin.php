@@ -12,7 +12,7 @@ declare(strict_types=1);
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * SystemSettingsOverrid is distributed in the hope that it will be useful, but WITHOUT
+ * SystemSettingsOverride is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
@@ -27,7 +27,7 @@ switch ($eventName) {
     case 'OnMODXInit':
     case 'OnHandleRequest':
     case 'pdoToolsOnFenomInit':
-        $file = $modx->getOption('system_settings_override.file_path', null, MODX_BASE_PATH . 'config/.system_settings.ini');
+        $file = $modx->getOption('system_settings_override.file_path', null, MODX_CORE_PATH . 'config/.system_settings.ini');
         if (!file_exists($file)) {
             $modx->log(modX::LOG_LEVEL_ERROR, 'SystemSettingsOverride: File ' . $file . ' does not exist.');
             return;

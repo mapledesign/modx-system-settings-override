@@ -39,4 +39,6 @@ This plugin hooks into the earliest MODX lifecycle events it can. This means tha
 [Others](https://community.modx.com/t/environmental-variables/4057) have asked for this feature in the past. I hope this extra helps.
 
 ### Why doesn't the extra work with MODX 3?
-It's because of funding. I write what my clients need. If you need this extra for MODX 3, please [get in touch](https://www.mapledesign.co.uk/contact/) to sponsor development.
+Edit: Apparently it does work with MODX3. However I'm not testing it on MODX3 at present.
+
+Original answer: It's because of funding. I write what my clients need. If you need this extra for MODX 3, please [get in touch](https://www.mapledesign.co.uk/contact/) to sponsor development.
