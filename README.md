@@ -41,7 +41,9 @@ return [
 ];
 ```
 
-Congratulations, you have added your first MODX system_settings! :tada:
+Congratulations, you have added your first MODX system_settings! :partying_face:
+
+You can access them in your MODX site by using the `[[++sample_setting_key]]` placeholder or `$modx->getOption('sample_setting_key')` syntax.
 
 This file should contain system settings that work for all environments.
 
