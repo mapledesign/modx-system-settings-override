@@ -1,35 +1,68 @@
-# SystemSettingsOverride: Override MODX system settings from the file system
+# SystemSettingsOverride v2: Override MODX system settings from the file system
 
-A free extra for MODX 2.7+ brought to you by [Maple](https://www.mapledesign.co.uk/modx/), the UK's leading MODX experts.
+A free extra for MODX 2 and MODX 3 brought to you by [Maple](https://www.mapledesign.co.uk/modx/), the UK's leading MODX experts.
 
 # Why?
-When developing a MODX site locally and deploying to production and staging environments, you often need different system settings for each environment. For example when you want to override SMTP details, point to a different Elasticsearch server, or to change the error_reporting level.
+When developing a MODX site locally and deploying to production and staging environments, you often need different system settings for each environment. For example to
+* override SMTP details
+* point to a different Elasticsearch server
+* change the error_reporting level.
 
 # How does this extra work?
 This extra allows you to override system settings from the file system. It does this by checking for a file called `.system_settings.ini` in the MODX `core/config` directory. If this file exists, it will be parsed and the system settings with the same keys will be overridden.
 
-# Security
-Your `.system_settings.ini` file is a security risk. It contains sensitive information that should not be publicly accessible. You should ensure that your web server is configured to prevent access to this file.
-
-### Apache
-Block access to all files and directories beginning with `.` except for those needed by Certbot using this snippet below:
-
-```apacheconf
-<Directory ~ "/\.(?!well-known\/)">
-    Require all denied
-</Directory>
-```
-
-### Nginx
-If you know please open a PR to add this.
-
-### Move the file out of the web root
-If you have more control of your server, you can put this file outside the web root. Add a MODX system setting (yes a real one, added via the MODX Manager) called `system_settings_override.file_path` and set the value to the absolute path to your `.system_settings.ini` file. This will allow you to keep your `.system_settings.ini` file outside the web root.
-
-Unfortunately if you do this you will need to keep the override file at the same path on your dev, staging and production servers. If you do not, you will need to manually update the MODX system setting on each server.
-
 # Limitations
 This plugin hooks into the earliest MODX lifecycle events it can. This means that it cannot override settings accessed before the `OnMODXInit` event. This includes settings accessed in the `core/config/config.inc.php` file.
+
+# Installation instructions
+This plugin requires PHP 7.4+ and is tested with PHP 8.1+.
+
+### Step 1: create the plugin
+
+1. Create a new Plugin in the MODX Manager
+2. Name the plugin SystemSettingsOverride
+3. Copy the contents of [`plugin.php`](plugin.php) into the plugin
+4. Set the plugin to run on the following events:
+     * `OnMODXInit`
+     * `OnHandleRequest`
+     * `pdoToolsOnFenomInit` (optional)
+5. Save the plugin
+
+### Step 2: create the system settings
+
+Create a new file at `core/config/system_settings.php` containing the following:
+
+```php
+<?php
+
+return [
+    'sample_setting_key' => 'setting_value',
+    'sample_setting_key2' => 'setting_value',
+];
+```
+
+Congratulations, you have added your first MODX system_settings! :tada:
+
+This file should contain system settings that work for all environments.
+
+#### Environment specific settings
+For system setting overrides specific to one environment (`dev`, `staging`, `production`), create a file called `system_settings.local.php` in the `core/config` directory. This file should contain the same PHP structure as `system_settings.php` but you only need to include the settings that you want to override.
+
+Example:
+
+```php
+<?php
+
+return [
+    'sample_setting_key' => 'my_dev_environment_value',
+];
+```
+
+### Step 3: Exclude `system_settings.local.php` from Git
+
+If you use Git, you need to exclude the local settings from being committed, or they will affect all deployments. Open your `.gitignore` file and add the following line:
+
+    /core/config/system_settings.local.php
 
 # Frequently Asked Questions
 

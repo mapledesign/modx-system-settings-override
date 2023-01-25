@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 /**
+ * SystemSettingsOverride v2.0.0
+ *
  * This plugin is based on ClientConfig by Mark Hamstra
  * https://github.com/modmore/ClientConfig/blob/master/core/components/clientconfig/elements/plugins/clientconfig.plugin.php
  *
@@ -27,12 +29,25 @@ switch ($eventName) {
     case 'OnMODXInit':
     case 'OnHandleRequest':
     case 'pdoToolsOnFenomInit':
-        $file = $modx->getOption('system_settings_override.file_path', null, MODX_CORE_PATH . 'config/.system_settings.ini');
-        if (!file_exists($file)) {
-            $modx->log(modX::LOG_LEVEL_ERROR, 'SystemSettingsOverride: File ' . $file . ' does not exist.');
+        $settings = [];
+
+        $file = MODX_CORE_PATH . 'config/system_settings.php';
+        if (file_exists($file)) {
+            $settings = require $file;
+        } else {
+            $modx->log(modX::LOG_LEVEL_DEBUG, 'SystemSettingsOverride: File ' . $file . ' does not exist.');
+        }
+
+        $file = MODX_CORE_PATH . 'config/system_settings.local.php';
+        if (file_exists($file)) {
+            $settings = array_merge($settings, require $file);
+        } else {
+            $modx->log(modX::LOG_LEVEL_DEBUG, 'SystemSettingsOverride: File ' . $file . ' does not exist.');
+        }
+
+        if (count($settings) === 0) {
             return;
         }
-        $settings = parse_ini_file($file, true);
 
         /* Make settings available as [[++tags]] */
         $modx->setPlaceholders($settings, '+');
@@ -40,7 +55,7 @@ switch ($eventName) {
         /* Make settings available as $modx->config['tags'] */
         foreach ($settings as $key => $value) {
             if ($oldValue = $modx->getOption($key)) {
-                $modx->log(modX::LOG_LEVEL_INFO, "Overriding system setting {$key} with value '{$value}' (previously '{$oldValue}')");
+                $modx->log(modX::LOG_LEVEL_DEBUG, "Overriding system setting {$key} with value '{$value}' (previously '{$oldValue}')");
             }
             $modx->setOption($key, $value);
         }
