@@ -9,7 +9,7 @@ When developing a MODX site locally and deploying to production and staging envi
 * change the error_reporting level.
 
 # How does this extra work?
-This extra allows you to override system settings from the file system. It does this by checking for a file called `.system_settings.ini` in the MODX `core/config` directory. If this file exists, it will be parsed and the system settings with the same keys will be overridden.
+This extra allows you to override system settings from the file system. It does this by checking for a file called `system_settings.php` in the MODX `core/config` directory. If this file exists, it will be read and the system settings with the same keys will be overridden. No settings in the database are changed.
 
 # Limitations
 This plugin hooks into the earliest MODX lifecycle events it can. This means that it cannot override settings accessed before the `OnMODXInit` event. This includes settings accessed in the `core/config/config.inc.php` file.
